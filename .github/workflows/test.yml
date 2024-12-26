@@ -3,7 +3,7 @@ name: Deploy Static Files with Docker
 on:
   push:
     branches:
-      - main  # Chạy khi có push vào nhánh main
+      - update  # Chạy khi có push vào nhánh main
 
 jobs:
   build-and-deploy:
