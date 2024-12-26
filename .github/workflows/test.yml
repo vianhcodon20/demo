@@ -1,0 +1,22 @@
+name: Deploy Static Files with Docker
+
+on:
+  push:
+    branches:
+      - update  # Chạy khi có push vào nhánh main
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted  # Sử dụng GitHub Runner trên máy của bạn
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build Docker Image
+        run: |
+          sudo docker build -t static-site .
+
+      - name: Run Docker Container
+        run: |
+          sudo docker run -d --name static-site -p 8080:8080 static-site
