@@ -15,8 +15,8 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          sudo docker build -t static-site .
+          docker build -t test .
 
       - name: Run Docker Container
         run: |
-          sudo docker run -d --name static-site -p 8080:8080 static-site
+          docker run -d --name test -p 8080:8080 test
