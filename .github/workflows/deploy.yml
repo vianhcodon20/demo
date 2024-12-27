@@ -42,7 +42,6 @@ jobs:
         with:
           host: ${{ secrets.HOST }}  # Server address
           username: ${{ secrets.USERNAME }}  # Username for server login
-          key: ${{ secrets.SSH_KEY }}  # Private key for server login
           script: |
             # Pull image from Docker Hub
             docker pull ${{ steps.meta.outputs.tags }}
