@@ -1,0 +1,28 @@
+name: "Build and deploy to server"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    name: Deploy to server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }} # Địa chỉ của server
+          username: ${{ secrets.USERNAME }} # Username để login vào server
+#          key: ${{ secrets.SSH_KEY }} # Private key để login vào server
+
+          script: |
+#           Pull image về lại server
+            docker pull ${{ steps.meta.outputs.tags }}
+#           Xóa container cũ nếu có
+            docker rm -f demo-cicd &>/dev/null
+#           Chạy container mới
+            docker run -it -d --name demo-cicd -p 8080:80 ${{ steps.meta.outputs.tags }}
