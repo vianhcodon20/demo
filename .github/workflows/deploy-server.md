@@ -12,30 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Login to docker hub
-        uses: docker/login-action@v2
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Tags docker image
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ secrets.DOCKER_USERNAME }}/demo-cicd # Change this to your docker image name
-
-      - name: Build and push to docker hub
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          host: ${{ secrets.HOST }}  # Server address
+          username: ${{ secrets.USERNAME }}  # Username for server login
+          key: ${{ secrets.SSH_KEY }}  # Private key for server login
+          port: 22  # Ensure the correct port is used
+          timeout: 30s
+          command_timeout: 10m
           script: |
             echo "Starting deployment to the server..."
             
@@ -50,4 +35,3 @@ jobs:
             
             # Run the new container
             docker run -it -d --name demo-cicd -p 8080:80 ${{ steps.meta.outputs.tags }}
-          
