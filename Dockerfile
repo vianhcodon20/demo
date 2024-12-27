@@ -5,7 +5,8 @@ FROM nginx:latest
 COPY . /usr/share/nginx/html
 
 # Expose port 80 để phục vụ nội dung
-EXPOSE 8080
+EXPOSE 80
 
 # Chạy Nginx ở foreground
 CMD ["nginx", "-g", "daemon off;"]
+
