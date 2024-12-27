@@ -42,7 +42,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }} # Địa chỉ của server
           username: ${{ secrets.USERNAME }} # Username để login vào server
-#          key: ${{ secrets.SSH_KEY }} # Private key để login vào server
+          key: ${{ secrets.SSH_KEY }} # Private key để login vào server
 
           script: |
 #           Pull image về lại server
