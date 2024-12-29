@@ -1,15 +1,19 @@
-name: "Build and deploy to server"
+# File: .github/workflows/build-and-deploy.yml
+
+name: Build and Deploy to Server
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
-  deploy:
-    name: Deploy to server
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    name: Build and Deploy to Server
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
@@ -18,36 +22,29 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Login to docker hub
+      - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Tags docker image
+      - name: Tags Docker image
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/demo-cicd # Change this to your docker image name
+          images: toandnseta/demo-cicd
 
-      - name: Build and push to docker hub
+      - name: Build and push to Docker Hub
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          script: |
-            echo "Starting deployment to the server..."
-            
-            # Check if SSH connection works
-            ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_KEY }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'echo "SSH connection established!"'
-            
-            # Pull image from Docker Hub
-            docker pull ${{ steps.meta.outputs.tags }}
-            
-            # Remove old container if it exists
-            docker rm -f demo-cicd &>/dev/null || true  # Ensure no error if the container doesn't exist
-            
-            # Run the new container
-            docker run -it -d --name demo-cicd -p 8080:80 ${{ steps.meta.outputs.tags }}
-          
+
+      - name: Deploy to Ubuntu Server
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker pull toandnseta/demo-cicd:main
+          docker ps -q | xargs -r docker stop || true
+          docker ps -aq | xargs -r docker rm || true
+          docker run -d --name demo-cicd -p 192.168.81.156:8080:80 toandnseta/demo-cicd:main
