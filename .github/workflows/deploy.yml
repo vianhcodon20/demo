@@ -44,7 +44,12 @@ jobs:
       - name: Deploy to Ubuntu Server
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          # Xóa container đang chạy
+          docker ps -q --filter "name=demo-cicd" | xargs -r docker stop || true
+          docker ps -aq --filter "name=demo-cicd" | xargs -r docker rm || true
+          # Xóa image cũ
+          docker images toandnseta/demo-cicd -q | xargs -r docker rmi || true
+          # Pull image mới
           docker pull toandnseta/demo-cicd:main
-          docker ps -q | xargs -r docker stop || true
-          docker ps -aq | xargs -r docker rm || true
+          # Chạy container mới
           docker run -d --name demo-cicd -p 192.168.81.156:8080:80 toandnseta/demo-cicd:main
