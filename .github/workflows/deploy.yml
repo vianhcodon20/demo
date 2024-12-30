@@ -45,5 +45,5 @@ jobs:
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker pull toandnseta/demo-cicd:main
-          docker ps -aq --filter "name=demo-cicd" | xargs -r docker rm -f
-          docker run -d --name demo-cicd -p 192.168.81.156:8080:80 toandnseta/demo-cicd:main
+          sudo docker ps -aq --filter "name=demo-cicd" | xargs -r sudo docker rm -f
+          sudo docker run -d --name demo-cicd -p 192.168.81.156:8080:80 toandnseta/demo-cicd:main
