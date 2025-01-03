@@ -52,4 +52,4 @@ jobs:
           # Pull image mới
           docker pull toandnseta/demo-cicd:main
           # Chạy container mới
-          docker run -d --name demo-cicd -p 192.168.81.156:8081:80 toandnseta/demo-cicd:main
+          docker run -d --name demo-cicd -p 192.168.81.156:8080:8080 toandnseta/demo-cicd:main
