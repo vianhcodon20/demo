@@ -32,7 +32,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: toandnseta/demo-cicd:main
+          images: toandnseta/demo-cicd
 
       - name: Build and push to Docker Hub
         uses: docker/build-push-action@v6
